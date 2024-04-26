@@ -1,0 +1,195 @@
+package milton.app.udabol;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView Nombre;
+    TextView Genero;
+    TextView Religion;
+    TextView Nacionalidad;
+    EditText AreaTexto;
+    EditText na;
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Nombre = findViewById(R.id.artista);
+        Genero = findViewById(R.id.genero);
+        Religion = findViewById(R.id.codigo);
+        Nacionalidad = findViewById(R.id.correo);
+        AreaTexto = findViewById(R.id.AreaTexto);
+        na = findViewById(R.id.nom_arch);
+    }
+
+    boolean buscar_arch(String a) {
+        String[] va = fileList();
+        int i = 0;
+        while (i < va.length) {
+            if (va[i].equals(a))
+                return true;
+            i++;
+        }
+        return false;
+    }
+
+    String nax;
+    int id = 0;
+
+    public void modificar(View v) {
+        String[] vt = new String[5];
+        try {
+            if (buscar_arch(na.getText().toString() + ".txt")) {
+                String texto_completo = "";
+                InputStreamReader ar = new InputStreamReader(openFileInput(na.getText().toString() + ".txt"));
+                BufferedReader LB = new BufferedReader(ar);
+                String lineaTexto = LB.readLine();
+                while (lineaTexto != null) {
+                    vt = lineaTexto.split("-");
+                    if (vt[1].equals(Nombre.getText().toString())) {
+                        lineaTexto = Nombre.getText().toString() + "-" + Genero.getText().toString() + "-" +
+                                Religion.getText().toString() + "-" + Nacionalidad.getText().toString();
+                    }
+                    texto_completo = texto_completo + lineaTexto + "\n";
+                    lineaTexto = LB.readLine();
+                }
+                LB.close();
+                ar.close();
+                String datos = texto_completo;
+                OutputStreamWriter ar1 = new OutputStreamWriter(openFileOutput(na.getText().toString() +
+                        ".txt", Activity.MODE_PRIVATE));
+                ar1.write(datos + "\n");
+                ar1.flush();
+                ar1.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void eliminar(View v) {
+        String[] vt = new String[5];
+        try
+        {
+            if (buscar_arch(na.getText().toString() + ".txt"))
+            {
+                String texto_completo = "";
+                InputStreamReader ar = new InputStreamReader(openFileInput(na.getText().toString() + ".txt"));
+                BufferedReader LB = new BufferedReader(ar);
+                String lineaTexto = LB.readLine();
+                while (lineaTexto != null)
+                {
+                    vt = lineaTexto.split("-");
+                    if (!(vt[1].equals(Nombre.getText().toString())))
+                    {
+                        texto_completo = texto_completo + lineaTexto + "\n";
+                    }
+
+                    lineaTexto = LB.readLine();
+                }
+                LB.close();
+                ar.close();
+                String datos = texto_completo;
+                OutputStreamWriter ar1 = new OutputStreamWriter(openFileOutput(na.getText().toString() +
+                        ".txt", Activity.MODE_PRIVATE));
+                ar1.write(datos + "\n");
+                ar1.flush();
+                ar1.close();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void guardar(View v) {
+        try {
+            id++;
+            nax = String.valueOf(na.getText() + ".txt");
+            String datos = buscarA(nax);
+
+            OutputStreamWriter ar = new OutputStreamWriter(openFileOutput(nax, Activity.MODE_PRIVATE));
+            ar.write(datos + "\n" + String.valueOf(id + "." + Nombre.getText() + "." + Genero.getText()
+                    + "." + Religion.getText() + "." + Nacionalidad.getText()));
+
+            ar.flush();
+            ar.close();
+            AreaTexto.setText("");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        limpiarCampos(v);
+
+    }
+
+    String buscarA(String nax) {
+        try {
+            if (buscar_arch(nax)) {
+                StringBuilder Texto_completo = new StringBuilder();
+                InputStreamReader ar = new InputStreamReader(openFileInput(nax));
+                BufferedReader LB = new BufferedReader(ar);
+                String LineaTexto = LB.readLine();
+                while (LineaTexto != null) {
+                    Texto_completo.append(LineaTexto).append("\n");
+                    LineaTexto = LB.readLine();
+                }
+                LB.close();
+                ar.close();
+                return Texto_completo.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    //modificado para buscar por nombre de archivo poniendo el .txt en el n-a
+    public void buscar(View v) {
+        String nombreArchivo = String.valueOf(na.getText()) + ".txt";
+        String s = buscarA(nombreArchivo);
+        if (!s.isEmpty()) {
+            String[] vx = s.split("\\.");
+            Nombre.setText(vx[1]);
+            Genero.setText(vx[2]);
+            Religion.setText(vx[3]);
+            Nacionalidad.setText(vx[4]);
+            AreaTexto.setText(s);
+        } else {
+            // Archivo no encontrado, puedes mostrar un mensaje o realizar alguna acción adecuada
+            // Aquí, mostramos un mensaje en el área de texto
+            AreaTexto.setText("El archivo '" + nombreArchivo + "' no existe.");
+            // También puedes limpiar los campos de texto relacionados
+            Nombre.setText("");
+            Genero.setText("");
+            Religion.setText("");
+            Nacionalidad.setText("");
+        }
+    }
+
+    //boton limpiar datos
+    public void limpiarCampos(View v) {
+        Nombre.setText("");
+        Genero.setText("");
+        Religion.setText("");
+        Nacionalidad.setText("");
+        AreaTexto.setText("");
+        na.setText("");
+    }
+}
