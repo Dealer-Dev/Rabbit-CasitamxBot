@@ -5,7 +5,7 @@ DIRSCRIPT="/etc/scripts/scp1"
 DIRSCRIPT2="/etc/scripts/scp2"
 DIR="/etc/http-shell"
 IVAR="/etc/http-instas"
-bar="\e[0;31m=====================================================\e[0m"
+bar="\e[0;31m××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××\e[0m"
 # Crear directorios si no existen
 [[ ! -d ${CIDdir} ]] && mkdir ${CIDdir}
 [[ ! -d ${DIRSCRIPT} ]] && mkdir -p ${DIRSCRIPT}
