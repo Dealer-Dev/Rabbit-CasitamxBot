@@ -814,7 +814,7 @@ while true; do
                     /[Rr]esell | /[Rr]eseller) mensajecre "${comando[1]}" & ;;
                     /[Rr]ell) reply & ;;
                     /[Kk]eygen | /[Gg]erar | [Gg]erar | [Kk]eygen) gerar-casita & ;;
-                    /[Rr]abbit | /[Gg]erarra | [Gg]erarra | [Rr]abbit) gerar-rabbit & ;;
+                    /[Rr]abbit | /[Rr]abbit | [Rr]abbit | [Rr]abbit) gerar-rabbit & ;;
 
                         # /[Cc]ambiar)creditos &;;
                     /* | *) invalido_fun & ;;
@@ -846,7 +846,7 @@ while true; do
                 /[Pp]ower) start_gen & ;;
                 /[Rr]esell | /[Rr]eseller) mensajecre "${comando[1]}" & ;;
                     /[Kk]eygen | /[Gg]erar | [Gg]erar | [Kk]eygen) gerar-casita & ;;
-                    /[Rr]abbit | /[Gg]erarra | [Gg]erarra | [Rr]abbit) gerar-rabbit & ;;
+                    /[Rr]abbit | /[Rr]abbit | [Rr]abbit | [Rr]abbit) gerar-rabbit & ;;
                 /[Ii]nfosys) infosys_src & ;;
                 /[Ll]ist) listID_src & ;;
                 /[Ii]nstalador) link_src & ;;
