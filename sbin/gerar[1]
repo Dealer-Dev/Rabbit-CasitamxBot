@@ -1,0 +1,49 @@
+#!/bin/bash
+clear
+[[ ! -e /usr/local/lib/url ]] && url='https://gitlab.com/donpatobot/dlbt/-/raw/main' || url=$(</usr/local/lib/url)
+source <(curl -sSL ${url}/sbin/colores)
+
+keygen=$(if lsof -V -i tcp -P -n | grep -v "ESTABLISHED" |grep -v "COMMAND" | grep "LISTEN" | grep 'nc.tradit' &> /dev/null; then
+	echo -e "\e[1;32m[ACTIVO]"
+else
+	echo -e "\e[1;31m[INACTIVO]"
+fi)
+apache=$(if lsof -V -i tcp -P -n | grep -v "ESTABLISHED" |grep -v "COMMAND" | grep "LISTEN" | grep apache2 &> /dev/null; then
+	echo -e "\e[1;32m[ON: 81]"
+else
+	echo -e "\e[1;91m[OFF]"
+fi)
+
+botgen=$(if systemctl is-active botgen|grep 'active' &> /dev/null; then
+	echo -e "\e[1;32m[ON]"
+else
+	echo -e "\e[1;91m[OFF]"
+fi)
+
+clear
+cat <<< '██████╗  ██████╗ ████████╗ ██████╗ ███████╗███╗   ██╗
+██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝ ██╔════╝████╗  ██║
+██████╔╝██║   ██║   ██║   ██║  ███╗█████╗  ██╔██╗ ██║
+██╔══██╗██║   ██║   ██║   ██║   ██║██╔══╝  ██║╚██╗██║
+██████╔╝╚██████╔╝   ██║   ╚██████╔╝███████╗██║ ╚████║
+╚═════╝  ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝
+                                                     '|lolcat
+msg -bar
+echo -e "\e[1;93mAPACHE: ${apache} \e[1;93mKEYGEN: \e[1;91m${keygen} \e[1;93mBOTGEN: \e[1;91 ${botgen}"
+msg -bar
+menu_func 'ACTIVAR BOT' 'PARAR BOT' 'ACTIVAR KEYGEN' 'DETENER KEYGEN'
+back
+sek=$(selection_fun 4)
+var=( [1]='botgen' [3]='http-server')
+value=( [1]='start' [2]='stop')
+case $sek in
+ 1|3)
+	if systemctl start "${var[$sek]}" &> /dev/null; then
+		msg -verd "[✓] ${var[$sek]} ACTIVADO [✓]"
+	fi;;
+  2|4)
+	if systemctl stop "${var[$sek]}" &> /dev/null; then
+		msg -verd "[✓] ${var[$sek]} DESACTIVADO [✓]"
+	fi;;
+
+esac
