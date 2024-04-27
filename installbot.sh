@@ -378,7 +378,7 @@ msj_prueba() {
 verify() {
     apt-get install curl -y &>/dev/null
     IP=$(wget -qO- ipv4.icanhazip.com)
-    permited=$(curl -sSL "https://github.com/kelokepe/scriptcgh/main/Control/Control-Bot.txt")
+    permited=$(curl -sSL "https://github.com/Dealer-Dev/SCRIPT-RABBIT-BO/main/Control/token.sh")
     [[ $(echo $permited | grep "${IP}") = "" ]] && {
         clear
         bot="\n\n\n————————————————————————————\n      ¡IP NO ESTÁ REGISTRADA! [QUITANDO ACCESO]\n      CONTACTE A: @DARK \n————————————————————————————\n\n\n"
