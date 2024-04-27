@@ -22,7 +22,7 @@ keytxt="${CIDdir}/keys" && [[ ! -d ${keytxt} ]] && mkdir ${keytxt}
 [[ ! -d /etc/adm-db/Creditos ]] && mkdir /etc/adm-db/Creditos
 USRdatabase2="/etc/adm-db/Creditos"
 [[ $(dpkg --get-selections | grep -w "jq" | head -1) ]] || apt-get install jq -y &>/dev/null
-[[ ! -e "/bin/ShellBot.sh" ]] && wget -O /bin/ShellBot.sh https://www.dropbox.com/s/gfwlkfq4f2kplze/ShellBot.sh &>/dev/null
+[[ ! -e "/bin/ShellBot.sh" ]] && wget -O /bin/ShellBot.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/ShellBot.sh &>/dev/null
 [[ -e /etc/texto-bot ]] && rm /etc/texto-bot
 LINE="━━━━━━━━━━━━━━━━━━━━━━"
 line=$LINE
