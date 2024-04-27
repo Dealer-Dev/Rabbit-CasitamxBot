@@ -1,5 +1,5 @@
 #!/bin/bash
-[[ ! -e /usr/local/lib/url ]] && url='https://gitlab.com/donpatobot/dlbt/-/raw/main' || url=$(</usr/local/lib/url)
+[[ ! -e /usr/local/lib/url ]] && url='https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main' || url=$(</usr/local/lib/url)
 
 source <(curl -sSL ${url}/sbin/colores)
 
