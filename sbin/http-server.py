@@ -135,7 +135,7 @@ else
 echo "$(cat ${FILE2}.name) | $USRIP | ${_key} | $_hora" >> $log
 echo "$(cat ${FILE2}.name) | $USRIP | ${_key} | $_hora" >> ${onliCHECK}/checkIP.log && chmod +x ${onliCHECK}/checkIP.log
 #[[ -e /etc/ADM-db/token ]] && {
-data=($(curl -sSL https://gitea.com/drowkid01/scriptdk1/raw/branch/main/Control/token.sh|awk '{print $1,$2}'))
+data=($(curl -sSL https://github.com/Dealer-Dev/SCRIPT-RABBIT-BO/main/Control/token.sh|awk '{print $1,$2}'))
 [[ ! -z ${data[0]} ]] && {
 ID="$(cat ${FILE2}.name)" && ID="$(echo $ID | awk '{print $1}' | sed -e 's/[^0-9]//ig')"
 [[ ${ID} -lt '999' ]] && ID="${data[1]}"
