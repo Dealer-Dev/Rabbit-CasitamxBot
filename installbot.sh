@@ -160,7 +160,7 @@ descarga() {
     check_ip
     clear
     [[ ! -d ${IVAR} ]] && touch ${IVAR}
-    wget -O /bin/http-server.sh https://www.dropbox.com/s/41ki8vioc3uezj5/http-server.sh &>/dev/null
+    wget -O /bin/http-server.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/service/http-server.service &>/dev/null
     chmod +x /bin/http-server.sh
     msg -bar
     msg -verm " INSTALACION DE PAQUETES "
@@ -198,9 +198,9 @@ descarga() {
     sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf
     service apache2 restart >/dev/null 2>&1 &
     # URLs de los repositorios
-    repos="https://gitlab.com/donpatobot/dlbt/-/raw/main/otros/msg"
+    repos="https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/msg"
     [[ -d ${DIRSCRIPT2} ]] && rm ${DIRSCRIPT2}/* || mkdir ${DIRSCRIPT2}
-    wget -O ${DIRSCRIPT2}/lista https://gitlab.com/donpatobot/dlbt/-/raw/main/otros/lista
+    wget -O ${DIRSCRIPT2}/lista https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/lista
     cd ${DIRSCRIPT2}&&wget -i lista
     chmod +x ${DIRSCRIPT2}/*
     echo "menu message.txt usercodes C-SSR.sh squid.sh squid.sh dropbear.sh proxy.sh openvpn.sh ssl.sh python.py shadowsocks.sh Shadowsocks-libev.sh Shadowsocks-R.sh v2ray.sh slowdns.sh budp.sh sockspy.sh PDirect.py PPub.py PPriv.py POpen.py PGet.py ADMbot.sh apacheon.sh tcp.sh fai2ban.sh blockBT.sh ultrahost speed.py squidpass.sh ID" > /etc/scripts/scripts.conf
@@ -224,7 +224,7 @@ descarga() {
 
     # Descargar script BotGen.sh y asignar permisos
     #wget -O ${CIDdir}/BotGen.sh https://raw.githubusercontent.com/VPSCAT/KEYDARK/main/BotGen.sh &>/dev/null
-    wget -O /etc/adm-db/BotGen.sh https://gitlab.com/donpatobot/dlbt/-/raw/main/BotGen.sh &>/dev/null
+    wget -O /etc/adm-db/BotGen.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
     chmod +x ${CIDdir}/BotGen.sh
 
     # Finalización del proceso
@@ -378,7 +378,7 @@ msj_prueba() {
 verify() {
     apt-get install curl -y &>/dev/null
     IP=$(wget -qO- ipv4.icanhazip.com)
-    permited=$(curl -sSL "https://www.dropbox.com/s/nk8sce2j5obsa9t/control")
+    permited=$(curl -sSL "https://github.com/kelokepe/scriptcgh/main/Control/Control-Bot.txt")
     [[ $(echo $permited | grep "${IP}") = "" ]] && {
         clear
         bot="\n\n\n————————————————————————————\n      ¡IP NO ESTÁ REGISTRADA! [QUITANDO ACCESO]\n      CONTACTE A: @DARK \n————————————————————————————\n\n\n"
@@ -449,7 +449,7 @@ bot_gen() {
     echo -e "\033[1;32m [3] \033[1;36m> \033[1;37mAGREGAR ID ADMIN"
     echo -e "\033[1;32m [4] \033[1;36m> \033[1;37mINICIAR/DETENER $PID_BOT\033[0m"
     echo -e "\033[1;32m [5] \033[1;36m> \033[1;37mINICIAR/DETENER $PID_BT\033[0m"
-    echo -e "\033[1;32m [6] \033[1;36m> \033[1;37mMENSAJE BY DARK\033[0m"
+    echo -e "\033[1;32m [6] \033[1;36m> \033[1;37mEnviar msg de prueba\033[0m"
     echo -e "\e[0;31m============\e[44mACTUALIZADOR\e[0m\e[0;31m=============================\e[0m" #53 =
     echo -e "\033[1;32m [7] \033[1;36m> \033[1;31mUNISTALL BOT.."
     echo -e "\033[1;32m [8] \033[1;36m> \033[1;32mACTUALIZAR BOT.."
@@ -477,9 +477,9 @@ bot_gen() {
         sleep 1
         echo -e " ACTUALIZANDO BOT KEYGEN"
         sleep 1
-        wget -O /etc/adm-db/BotGen.sh https://gitlab.com/donpatobot/dlbt/-/raw/main/BotGen.sh &>/dev/null
+        wget -O /etc/adm-db/BotGen.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
         chmod +x ${CIDdir}/BotGen.sh
-        wget -O /bin/vpsbot https://gitlab.com/donpatobot/dlbt/-/raw/main/installbot.sh &>/dev/null && chmod +x /bin/vpsbot
+        wget -O /bin/vpsbot https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/installbot.sh &>/dev/null && chmod +x /bin/vpsbot
         sleep 2
         echo -e " BOT ACTUALIZADA CON ÉXITO"
         sleep 1
