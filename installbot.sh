@@ -52,7 +52,10 @@ os_system() {
     esac
     link="https://raw.githubusercontent.com/rudi9999/ADMRufu/main/Repositorios/${vercion}.list"
     case $vercion in
-    8 | 9 | 10 | 11 | 16.04 | 18.04 | 20.04 | 20.10 | 21.04 | 21.10 | 22.04) wget -O /etc/apt/sources.list ${link} &>/dev/null ;;
+    8 | 9 | 10 | 11 | 16.04 | 18.04 | 20.04 | 20.10 | 21.04 | 21.10 | 22.04) 
+        # CORRECCIÓN: Evitar que el script borre los repositorios del VPS
+        # wget -O /etc/apt/sources.list ${link} &>/dev/null 
+        ;;
     esac
 }
 
@@ -136,9 +139,10 @@ unistall() {
 # Función para mostrar un spinner
 spiner() {
     local pid=$!
-    local delay=1
+    local delay=0.5
     local spinner=('█■■■■■■' '■█■■■■■' '■■█■■■■' '■■■█■■■' '■■■■█■■' '■■■■■█■' '■■■■■■█-')
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    # CORRECCIÓN: kill -0 es mucho más seguro para verificar si el proceso sigue vivo
+    while kill -0 $pid 2>/dev/null; do
         for i in "${spinner[@]}"; do
             tput civis
             echo -ne "\033[1;31m\r[\e[0m\e[1;32m~\e[0m\e[1;31m]\e[0m\e[1;96mInstalando....\e[31m[\033[32m$i\033[31m]     \033[0m       "
@@ -158,15 +162,18 @@ descarga() {
     clear
     [[ ! -d ${IVAR} ]] && touch ${IVAR}
     
-    # CORRECCIÓN: Se descargaba un .service en lugar de un script bash. Asegúrate que en tu repo este archivo sea el script bash del server.
     wget -O /bin/http-server.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/http-server.sh &>/dev/null
     chmod +x /bin/http-server.sh
     
     msg -bar
     msg -verm " INSTALACION DE PAQUETES "
     msg -bar
+    
+    # Limpieza de apt antes de empezar para evitar errores de lock
+    apt-get clean &>/dev/null
+    
     echo -e "\033[31m[\033[32m~\033[31m]\033[37m$instalando Update"
-    apt-get update &>/dev/null &
+    apt-get update --fix-missing &>/dev/null &
     spiner
     echo -e "\033[31m[\033[32m~\033[31m]\033[37m$instalando Upgrade"
     apt-get upgrade -y &>/dev/null &
@@ -190,7 +197,7 @@ descarga() {
     apt-get install bc -y >/dev/null 2>&1 &
     spiner
     echo -e "\033[31m[\033[32m~\033[31m]\033[37m$instalando Netcat"
-    apt-get install netcat -y >/dev/null 2>&1 &
+    apt-get install netcat-traditional -y >/dev/null 2>&1 &
     spiner
     echo -e "\033[31m[\033[32m~\033[31m]\033[37m$instalando Apache2"
     apt-get install apache2 -y &>/dev/null &
@@ -199,22 +206,18 @@ descarga() {
     sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf
     service apache2 restart >/dev/null 2>&1 &
     
-    # CORRECCIÓN: Enlaces parseados a formato raw.githubusercontent.com
-    repos="https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/msg.zip"
     [[ -d ${DIRSCRIPT2} ]] && rm ${DIRSCRIPT2}/* || mkdir ${DIRSCRIPT2}
     
-    wget -O ${DIRSCRIPT2}/lista https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/lista
-    cd ${DIRSCRIPT2} && wget -i lista
+    wget -O ${DIRSCRIPT2}/lista https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/lista &>/dev/null
+    cd ${DIRSCRIPT2} && wget -i lista &>/dev/null
     chmod +x ${DIRSCRIPT2}/*
     echo "menu message.txt usercodes C-SSR.sh squid.sh squid.sh dropbear.sh proxy.sh openvpn.sh ssl.sh python.py shadowsocks.sh Shadowsocks-libev.sh Shadowsocks-R.sh v2ray.sh slowdns.sh budp.sh sockspy.sh PDirect.py PPub.py PPriv.py POpen.py PGet.py ADMbot.sh apacheon.sh tcp.sh fai2ban.sh blockBT.sh ultrahost speed.py squidpass.sh ID" > /etc/scripts/scripts.conf
     ls ${DIRSCRIPT2} | xargs >> /etc/scripts/scripts.conf
 
-    # Descargar archivos y descomprimir
-    wget $repos -O msg.zip &>/dev/null
-    unzip msg.zip -d ${DIRSCRIPT}
-    rm msg.zip
+    # CORRECCIÓN: Descargar directamente el archivo encriptado sin usar unzip
+    repos="https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/msg"
+    wget -O ${DIRSCRIPT}/msg $repos &>/dev/null
     
-    # Asignar permisos de ejecución a los scripts
     chmod +x ${DIRSCRIPT}/*
 
     sleep 1s
@@ -223,7 +226,6 @@ descarga() {
     echo -e "$bar"
     sleep 2s
 
-    # CORRECCIÓN: Descarga desde el enlace raw
     wget -O /etc/adm-db/BotGen.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
     chmod +x ${CIDdir}/BotGen.sh
 
@@ -377,7 +379,6 @@ msj_prueba() {
 verify() {
     apt-get install curl -y &>/dev/null
     IP=$(wget -qO- ipv4.icanhazip.com)
-    # CORRECCIÓN: Enlace raw
     permited=$(curl -sSL "https://raw.githubusercontent.com/Dealer-Dev/SCRIPT-RABBIT-BO/main/Control/token.sh")
     [[ $(echo $permited | grep "${IP}") = "" ]] && {
         clear
@@ -456,7 +457,6 @@ bot_gen() {
         sleep 1
         echo -e " ACTUALIZANDO BOT KEYGEN"
         sleep 1
-        # CORRECCIÓN: Enlaces raw
         wget -O /etc/adm-db/BotGen.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
         chmod +x ${CIDdir}/BotGen.sh
         wget -O /bin/vpsbot https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/installbot.sh &>/dev/null && chmod +x /bin/vpsbot
