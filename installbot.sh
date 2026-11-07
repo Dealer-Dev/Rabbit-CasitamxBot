@@ -423,7 +423,7 @@ bot_gen() {
     echo -e "\e[1;36m      APACHE: \e[1;32m $APACHE81     \e[1;36mKEYGEN: \e[1;32m$BOK"
     echo -e "   \e[1;93m$systema \e[97mRam: \e[92m$ram1 \e[97mLibre: \e[92m$ram2 \e[97mUsado: \e[92m$ram3 "
     echo -e "\e[0;31m============\e[44mADMINISTRADOR BOT\e[0m\e[0;31m========================\e[0m"
-    echo -e "\033[1;32m [1]\033[1;36m> \033[1;33mDESCARGAR ARCHIVOS Y DEPENDENCIAS VPSMX 🐰"
+    echo -e "\033[1;32m [1]\033[1;36m> \033[1;33mDESCARGAR ARCHIVOS Y DEPENDENCIAS VPSMX 🐇🐰"
     echo -e "\e[0;31m============\e[44mTOKEN || ID || BOT\e[0m\e[0;31m=======================\e[0m"
     echo -e "\033[1;32m [2] \033[1;36m> \033[1;37mAGREGAR TOKEN BOT"
     echo -e "\033[1;32m [3] \033[1;36m> \033[1;37mAGREGAR ID ADMIN"
