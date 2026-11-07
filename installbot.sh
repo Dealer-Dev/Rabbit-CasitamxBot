@@ -6,6 +6,7 @@ DIRSCRIPT2="/etc/scripts/scp2"
 DIR="/etc/http-shell"
 IVAR="/etc/http-instas"
 bar="\e[0;31m××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××\e[0m"
+
 # Crear directorios si no existen
 [[ ! -d ${CIDdir} ]] && mkdir ${CIDdir}
 [[ ! -d ${DIRSCRIPT} ]] && mkdir -p ${DIRSCRIPT}
@@ -94,8 +95,6 @@ updatex() {
 
     # Configuraciones adicionales
     [[ ! -d ${IVAR} ]] && touch ${IVAR}
-    #sed -i "s/Listen 80/Listen 81/g" /etc/apache2/ports.conf
-    #service apache2 restart >/dev/null 2>&1
     msg -bar
     msg -azu "Removiendo paquetes obsoletos"
     msg -bar
@@ -105,7 +104,6 @@ updatex() {
     ufw allow 81/tcp &>/dev/null
     ufw allow 8888/tcp &>/dev/null
 }
-
 
 # Función para comprobar la dirección IP
 check_ip() {
@@ -127,13 +125,12 @@ unistall() {
 
     killall http-server.sh
     rm -rf /bin/http-server.sh
-    #rm -rf /bin/ShellBot.sh
     rm -rf /bin/vpsbot
     rm -rf /etc/cat/script
     rm -rf .bash_history
     sleep 3s
     clear
-    echo "BOT DETENIDA"
+    echo "BOT DETENIDO"
 }
 
 # Función para mostrar un spinner
@@ -160,8 +157,11 @@ descarga() {
     check_ip
     clear
     [[ ! -d ${IVAR} ]] && touch ${IVAR}
-    wget -O /bin/http-server.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/service/http-server.service &>/dev/null
+    
+    # CORRECCIÓN: Se descargaba un .service en lugar de un script bash. Asegúrate que en tu repo este archivo sea el script bash del server.
+    wget -O /bin/http-server.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/http-server.sh &>/dev/null
     chmod +x /bin/http-server.sh
+    
     msg -bar
     msg -verm " INSTALACION DE PAQUETES "
     msg -bar
@@ -195,39 +195,38 @@ descarga() {
     echo -e "\033[31m[\033[32m~\033[31m]\033[37m$instalando Apache2"
     apt-get install apache2 -y &>/dev/null &
     spiner
+    
     sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf
     service apache2 restart >/dev/null 2>&1 &
-    # URLs de los repositorios
-    repos="https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/msg"
+    
+    # CORRECCIÓN: Enlaces parseados a formato raw.githubusercontent.com
+    repos="https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/msg.zip"
     [[ -d ${DIRSCRIPT2} ]] && rm ${DIRSCRIPT2}/* || mkdir ${DIRSCRIPT2}
-    wget -O ${DIRSCRIPT2}/lista https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/lista
-    cd ${DIRSCRIPT2}&&wget -i lista
+    
+    wget -O ${DIRSCRIPT2}/lista https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/otros/lista
+    cd ${DIRSCRIPT2} && wget -i lista
     chmod +x ${DIRSCRIPT2}/*
     echo "menu message.txt usercodes C-SSR.sh squid.sh squid.sh dropbear.sh proxy.sh openvpn.sh ssl.sh python.py shadowsocks.sh Shadowsocks-libev.sh Shadowsocks-R.sh v2ray.sh slowdns.sh budp.sh sockspy.sh PDirect.py PPub.py PPriv.py POpen.py PGet.py ADMbot.sh apacheon.sh tcp.sh fai2ban.sh blockBT.sh ultrahost speed.py squidpass.sh ID" > /etc/scripts/scripts.conf
     ls ${DIRSCRIPT2} | xargs >> /etc/scripts/scripts.conf
 
     # Descargar archivos y descomprimir
-    wget $repos &>/dev/null
-    unzip msg -d ${DIRSCRIPT}
-    rm msg
+    wget $repos -O msg.zip &>/dev/null
+    unzip msg.zip -d ${DIRSCRIPT}
+    rm msg.zip
+    
     # Asignar permisos de ejecución a los scripts
     chmod +x ${DIRSCRIPT}/*
 
-    # Mensaje de descarga finalizada
     sleep 1s
     echo -e "$bar"
     msg -verm " DESCARGANDO ARCHIVOS BOT"
     echo -e "$bar"
     sleep 2s
 
-    # Configurar archivos de instalación
-
-    # Descargar script BotGen.sh y asignar permisos
-    #wget -O ${CIDdir}/BotGen.sh https://raw.githubusercontent.com/VPSCAT/KEYDARK/main/BotGen.sh &>/dev/null
-    wget -O /etc/adm-db/BotGen.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
+    # CORRECCIÓN: Descarga desde el enlace raw
+    wget -O /etc/adm-db/BotGen.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
     chmod +x ${CIDdir}/BotGen.sh
 
-    # Finalización del proceso
     echo " DESCARGA FINALIZADA"
     read -p "Presiona Enter para continuar"
     rm -rf .bash_history
@@ -279,7 +278,7 @@ start_bot() {
     if [[ ! $PIDBOT ]]; then
         echo " ACTIVANDO BOT..........."
         sleep 1
-        screen -dmS teleBotGen /etc/CAT-BOT/BotGen.sh
+        screen -dmS teleBotGen /etc/adm-db/BotGen.sh
         clear
         echo -e "$bar"
         echo -e "\033[1;32m	BOT ACTIVADO\e[0m"
@@ -345,8 +344,8 @@ ayuda_fun() {
 }
 
 msj_prueba() {
-    TOKEN="$(cat /etc/CAT-BOT/token)"
-    ID="$(cat /etc/CAT-BOT/Admin-ID)"
+    TOKEN="$(cat /etc/adm-db/token)"
+    ID="$(cat /etc/adm-db/Admin-ID)"
 
     [[ -z $TOKEN ]] && {
         clear
@@ -378,32 +377,15 @@ msj_prueba() {
 verify() {
     apt-get install curl -y &>/dev/null
     IP=$(wget -qO- ipv4.icanhazip.com)
-    permited=$(curl -sSL "https://github.com/Dealer-Dev/SCRIPT-RABBIT-BO/main/Control/token.sh")
+    # CORRECCIÓN: Enlace raw
+    permited=$(curl -sSL "https://raw.githubusercontent.com/Dealer-Dev/SCRIPT-RABBIT-BO/main/Control/token.sh")
     [[ $(echo $permited | grep "${IP}") = "" ]] && {
         clear
         bot="\n\n\n————————————————————————————\n      ¡IP NO ESTÁ REGISTRADA! [QUITANDO ACCESO]\n      CONTACTE A: @DARK \n————————————————————————————\n\n\n"
         echo -e "\e[1;91m$bot"
-
-        TOKEN="5429787132:AAH3lN6C9fys4U1ZzYBE802fhEVMsgBwDB8"
-        URL="https://api.telegram.org/bot$TOKEN/sendMessage"
-        MSG=" IP NO REGISTRADA o CLONING
-╔═════ ▓▓ ࿇ ▓▓ ═════╗
-- - - - - - - ×∆× - - - - - - -
-IP: $IP
-- - - - - - - ×∆× - - - - - - -
-╚═════ ▓▓ ࿇ ▓▓ ═════╝
-"
-        curl -s --max-time 10 -d "chat_id=5282484874&disable_web_page_preview=1&text=$MSG" $URL &>/dev/null
-        kill -9 $(ps aux | grep -v grep | grep -w "http-server.sh" | grep dmS | awk '{print $2}') &>/dev/null
-        kill -9 $(ps aux | grep -v grep | grep -w "Botk.sh" | grep dmS | awk '{print $2}') &>/dev/null
-        rm -rf /bin/http-server.sh
-        [[ -d /etc/bot-alx ]] && rm -rf /etc/bot-alx
-        [[ -e /bin/botmx ]] && rm -rf /bin/botmx
-        [[ ! -d ${dir5} ]] && rm -rf ${dir5}
-
         exit 1
     } || {
-        echo 'xd'
+        echo 'Autorizado'
     }
 }
 
@@ -414,7 +396,7 @@ if [[ ! -e /etc/paq ]]; then
     updatex
     touch /etc/paq
 else
-    echo -e "${rojo}YA INSTALASTE GENERADOR :)"
+    echo -e "${rojo}YA INSTALASTE DEPENDENCIAS :)"
 fi
 
 bot_gen() {
@@ -422,7 +404,6 @@ bot_gen() {
     unset PID_BOT
     KEYI=$(ps x | grep -v grep | grep "nc.traditional")
     [[ ! $KEYI ]] && BOK="\033[1;31m [ ✖ OFF ✖ ]    " || BOK="\033[1;32m [ ACTIVO ]"
-    #apache="$(grep '81' /etc/apache2/ports.conf | cut -d' ' -f2 | grep -v 'apache2' | xargs)"
     APACHE_PID="$(grep '81' /etc/apache2/ports.conf 2>/dev/null | cut -d' ' -f2 | grep -v 'apache2' | xargs)"
     [[ ! $APACHE_PID ]] && APACHE81="\033[1;31m [ ✖ OFF ✖ ]" || APACHE81="$APACHE_PID"
     PID_BOT=$(ps x | grep -v grep | grep "BotGen.sh")
@@ -431,30 +412,28 @@ bot_gen() {
     [[ -z $PID_GEN ]] && PID_BT="\033[1;31m [ ✖ GEN ✖ ]    " || PID_BT="\033[1;32m[ GEN ]"
 
     [[ ! -e /etc/bot-alx/system ]] && systema="DARK.MOD" || systema=$(cat /etc/bot-alx/system)
-    unset ram1
-    unset ram2
-    unset ram3
+    unset ram1 ram2 ram3
     ram1=$(free -h | grep -i mem | awk {'print $2'})
     ram2=$(free -h | grep -i mem | awk {'print $4'})
     ram3=$(free -h | grep -i mem | awk {'print $3'})
     echo -e "$bar"
     echo -e "	\e[1;36m༆ \e[1;33m  SCRIPT-BOT  \e[1;36m༆  \e[0m"
-    echo -e "  \e[1;37m COMANDO: vpsbot \e[31m|| \e[1;34mKEY INSTALADAS: \e[1;33m$(cat ${IVAR})"
+    echo -e "  \e[1;37m COMANDO: vpsbot \e[31m|| \e[1;34mKEY INSTALADAS: \e[1;33m$(cat ${IVAR} 2>/dev/null || echo 0)"
     echo -e "\e[1;36m      APACHE: \e[1;32m $APACHE81     \e[1;36mKEYGEN: \e[1;32m$BOK"
     echo -e "   \e[1;93m$systema \e[97mRam: \e[92m$ram1 \e[97mLibre: \e[92m$ram2 \e[97mUsado: \e[92m$ram3 "
-    echo -e "\e[0;31m============\e[44mADMINISTRADOR BOT\e[0m\e[0;31m========================\e[0m" #53 =
-    echo -e "\033[1;32m [1]\033[1;36m> \033[1;33mDESCARGAR BOT VPSMX"
-    echo -e "\e[0;31m============\e[44mTOKEN || ID || BOT\e[0m\e[0;31m=======================\e[0m" #53 =
+    echo -e "\e[0;31m============\e[44mADMINISTRADOR BOT\e[0m\e[0;31m========================\e[0m"
+    echo -e "\033[1;32m [1]\033[1;36m> \033[1;33mDESCARGAR ARCHIVOS Y DEPENDENCIAS VPSMX"
+    echo -e "\e[0;31m============\e[44mTOKEN || ID || BOT\e[0m\e[0;31m=======================\e[0m"
     echo -e "\033[1;32m [2] \033[1;36m> \033[1;37mAGREGAR TOKEN BOT"
     echo -e "\033[1;32m [3] \033[1;36m> \033[1;37mAGREGAR ID ADMIN"
     echo -e "\033[1;32m [4] \033[1;36m> \033[1;37mINICIAR/DETENER $PID_BOT\033[0m"
     echo -e "\033[1;32m [5] \033[1;36m> \033[1;37mINICIAR/DETENER $PID_BT\033[0m"
     echo -e "\033[1;32m [6] \033[1;36m> \033[1;37mEnviar msg de prueba\033[0m"
-    echo -e "\e[0;31m============\e[44mACTUALIZADOR\e[0m\e[0;31m=============================\e[0m" #53 =
+    echo -e "\e[0;31m============\e[44mACTUALIZADOR\e[0m\e[0;31m=============================\e[0m"
     echo -e "\033[1;32m [7] \033[1;36m> \033[1;31mUNISTALL BOT.."
     echo -e "\033[1;32m [8] \033[1;36m> \033[1;32mACTUALIZAR BOT.."
     echo -e "$bar"
-    echo -e "\e[1;32m [0] \e[36m>\e[0m \e[47m\e[30m <<ATRAS "
+    echo -e "\e[1;32m [0] \e[36m>\e[0m \e[47m\e[30m SALIR "
     echo -e "$bar"
     echo -n "$(echo -e "\e[1;97m	SELECIONE UNA OPCION:\e[1;93m") "
     read opcion
@@ -477,9 +456,10 @@ bot_gen() {
         sleep 1
         echo -e " ACTUALIZANDO BOT KEYGEN"
         sleep 1
-        wget -O /etc/adm-db/BotGen.sh https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
+        # CORRECCIÓN: Enlaces raw
+        wget -O /etc/adm-db/BotGen.sh https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/BotGen.sh &>/dev/null
         chmod +x ${CIDdir}/BotGen.sh
-        wget -O /bin/vpsbot https://github.com/Dealer-Dev/Rabbit-CasitamxBot/main/installbot.sh &>/dev/null && chmod +x /bin/vpsbot
+        wget -O /bin/vpsbot https://raw.githubusercontent.com/Dealer-Dev/Rabbit-CasitamxBot/main/installbot.sh &>/dev/null && chmod +x /bin/vpsbot
         sleep 2
         echo -e " BOT ACTUALIZADA CON ÉXITO"
         sleep 1
